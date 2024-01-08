@@ -5,7 +5,10 @@ type todo = {
 
 const todos: todo[] = [{ label: "Todo 1", value: "1" }];
 
-export const getTodos = () => {
+export const getTodos = (value: number, query) => {
+	console.log(value);
+	console.log(query);
+
 	return new Promise((resolve) =>
 		setTimeout(() => {
 			return resolve(todos);

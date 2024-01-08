@@ -1,11 +1,16 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import React from "react";
+import React, { useState } from "react";
 import { getTodos, postTodos } from "../api/todos";
 
 const Todo: React.FC = () => {
+	const [value, setValue] = useState(1);
+
 	const queryClient = useQueryClient();
 
-	const query = useQuery({ queryKey: ["todos"], queryFn: getTodos });
+	const query = useQuery({
+		queryKey: ["todos", value],
+		queryFn: (query) => getTodos(value, query),
+	});
 
 	const mutation = useMutation({
 		mutationFn: postTodos,
@@ -20,7 +25,11 @@ const Todo: React.FC = () => {
 
 	return (
 		<div>
-			<ul>{query.data?.length && query.data?.map((todo) => <li key={todo.value}>{todo.label}</li>)}</ul>
+			<ul>
+				{query.data &&
+					query.data?.length &&
+					query.data?.map((todo) => <li key={todo.value}>{todo.label}</li>)}
+			</ul>
 
 			<button
 				onClick={() => {
