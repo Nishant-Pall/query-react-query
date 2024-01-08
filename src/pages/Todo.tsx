@@ -17,11 +17,25 @@ const Todo: React.FC = () => {
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["todos"] });
 		},
+		onMutate: (variables) => {
+			return { id: 1 };
+		},
+		onError: (error, variables, context) => {
+			console.log(`roll back with id ${context.id}`);
+		},
+		onSettled: () => {
+			console.log("settled no matter what");
+		},
 	});
 
 	if (query.isFetching) return <div>Loading....</div>;
 
 	if (query.isError) return <div>Error: {query.error.message}</div>;
+
+	const onClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+		e.preventDefault();
+		mutation.mutate({ value: String(Date.now()), label: "Do Laundry" });
+	};
 
 	return (
 		<div>
@@ -31,13 +45,7 @@ const Todo: React.FC = () => {
 					query.data?.map((todo) => <li key={todo.value}>{todo.label}</li>)}
 			</ul>
 
-			<button
-				onClick={() => {
-					mutation.mutate({ value: String(Date.now()), label: "Do Laundry" });
-				}}
-			>
-				Add Todo
-			</button>
+			<button onClick={onClick}>Add Todo</button>
 		</div>
 	);
 };
