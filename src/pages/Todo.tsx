@@ -14,6 +14,7 @@ const Todo: React.FC = () => {
 
 	const mutation = useMutation({
 		mutationFn: postTodos,
+		// These are exectue first
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["todos"] });
 		},
@@ -34,7 +35,13 @@ const Todo: React.FC = () => {
 
 	const onClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 		e.preventDefault();
-		mutation.mutate({ value: String(Date.now()), label: "Do Laundry" });
+		mutation.mutate(
+			{ value: String(Date.now()), label: "Do Laundry" },
+			// These are executed second
+			{
+				onSuccess: () => {},
+			}
+		);
 	};
 
 	return (
